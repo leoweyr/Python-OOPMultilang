@@ -1,8 +1,8 @@
-from .lang import (
+from .lang_switcher import (
     LoadMode,
-    Lang,
+    LangSwitcher,
     LangDictSearchError
 )
 
 
-__all__ = ["LoadMode", "Lang", "LangDictSearchError"]
+__all__ = ["LoadMode", "LangSwitcher", "LangDictSearchError"]

@@ -9,14 +9,14 @@ An enumeration representing two loading modes.
 
 
 
-## Lang
+## LangSwitcher
 
 A working class for language conversion.
 
 ### Constructor
 
 ```python
-Lang(include, load_mode)
+LangSwitcher(include, load_mode)
 ```
 
 | Parameter | Type     | Default           | Description                                                  |
@@ -29,7 +29,7 @@ Lang(include, load_mode)
 ### Default setting
 
 ```
-Lang().default_lang(source_lang, target_lang)
+LangSwitcher().default_lang(source_lang, target_lang)
 ```
 
 | Parameter   | Type   | Default | Description                                                 |
@@ -43,7 +43,7 @@ Lang().default_lang(source_lang, target_lang)
 
 > The description of the universal word and the native word is in [doc](https://github.com/leoweyr/Python-OOPMultilang/blob/main/doc/data%20standard.md).
 
-#### Lang().str(word, source_lang, target_lang)
+#### LangSwitcher().str(word, source_lang, target_lang)
 
 String conversion method.
 
@@ -53,9 +53,9 @@ String conversion method.
 | source_lang | string | ""      | The source language to convert from. |
 | target_lang | string | ""      | The target language to convert to.   |
 
-> `""` represents it is the default language set in `Lang().default_lang()`.
+> `""` represents it is the default language set in `LangSwitcher().default_lang()`.
 
-#### Lang().universal
+#### LangSwitcher().universal
 
 Object-oriented paradigm conversion method, only supports converting a universal word into other native word.
 
@@ -63,10 +63,10 @@ There are two syntax statements:
 
 ```python
 # Pure object-oriented paradigm suffix.
-Lang().universal.*
+LangSwitcher().universal.*
 
 # End of suffix with the target language to convert to.
-Lang().universal.*.target_lang
+LangSwitcher().universal.*.target_lang
 
 # `*` represents a specific universal word.
 ```

@@ -47,7 +47,7 @@ class _LangUniversal():
         return ChainedClass()
 
 
-class Lang:
+class LangSwitcher:
     def __init__(self, include=(), load_mode=LoadMode.REALTIME):
         self.__m_dict = {}
         self._m_load_mode = load_mode

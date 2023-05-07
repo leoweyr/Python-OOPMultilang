@@ -10,7 +10,7 @@ In the argument passed in param<include>:
 2. ``"./lang/zh_cn.lang"``: Expression using the short-form kind. The file name "zh_cn" will be used as the name of the 
 language associated with this language dictionary.
 """
-ui_alt_lang = oopmultilang.Lang(
+ui_alt_lang = oopmultilang.LangSwitcher(
     include=(
     "./lang/en_us.lang as en_us",
     "./lang/zh_cn.lang"
