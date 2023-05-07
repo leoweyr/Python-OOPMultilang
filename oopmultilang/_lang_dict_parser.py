@@ -1,10 +1,12 @@
 class LangDictParser:
     """
-    Each lang dict data structure is uniformly composed of universal word and native word in pairs.
+    The data structure of each language dictionary is uniformly composed of pairs, each consisting of a universal word
+    and its corresponding native word.
 
     - ``universal word``: Similar to the object-oriented usage, generally expressed in English.
     - ``native word``: Native word of the language associated with the lang dict.
     """
+
     @classmethod
     def loads(cls, lang_dict):
         pass

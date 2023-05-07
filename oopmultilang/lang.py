@@ -6,13 +6,15 @@ An enumeration representing two loading modes.
 - ``REALTIME``: Static data files are read for each conversion.
 - ``ONETIME``: Static data files are only read once when the object is instantiated for the first time.
 """
-load_mode = Enum('LoadMode', ('REALTIME', 'ONETIME'))
+class LoadMode(Enum):
+    REALTIME = 0
+    ONETIME = 1
 
 
-from _errors import ExpressionError
-from _errors import LangDictSearchError
-from _lang_dict_parser import LangTypeLangDict
 from easierfile import File
+from ._errors import ExpressionError
+from ._errors import LangDictSearchError
+from ._lang_dict_parser import LangTypeLangDict
 
 
 class _LangUniversal():
@@ -46,7 +48,7 @@ class _LangUniversal():
 
 
 class Lang:
-    def __init__(self, include=(), load_mode=load_mode.REALTIME):
+    def __init__(self, include=(), load_mode=LoadMode.REALTIME):
         self.__m_dict = {}
         self._m_load_mode = load_mode
 
@@ -76,17 +78,17 @@ class Lang:
                         - ``expression_parsing[0]``: The file path of the language dictionary.
                         - ``expression_parsing[1]``: The associated language of the language dictionary.
                         """
-                        expression_parsing = [expression_unit.strip() for expression_unit in expression]
-                        dictionary_file = File(expression_parsing[0])
+                        expression_parsing = [expression_unit.strip() for expression_unit in expression.split("as")]
+                        dictionary_file = File(expression_parsing[0], False, False)
                         dictionary_associated_lang = expression_parsing[1]
                     else:
                         raise ExpressionError(expression)
                 else:
-                    dictionary_file = File(expression)
+                    dictionary_file = File(expression, False, False)
                     dictionary_associated_lang = dictionary_file.info["name"]
 
                 # Store language dictionary file information for different languages into member:private<self.__m_dict>.
-                if not dictionary_file.status["exist"]:
+                if not dictionary_file.state["exist"]:
                     raise FileNotFoundError("Language dictionary not found: " + dictionary_file.info["path"])
                 else:
                     if dictionary_associated_lang in self.__m_dict.keys():
@@ -95,38 +97,38 @@ class Lang:
                         self.__m_dict[dictionary_associated_lang] = [dictionary_file.info["path"]]
 
         # One-time loading mode.
-        if self._m_load_mode == load_mode.ONETIME:
+        if self._m_load_mode == LoadMode.ONETIME:
             self.__load_lang_dict()
 
     def __load_lang_dict(self):
         new_dict = self.__m_dict.copy()
         for dictionary_associated_lang, dictionary in self.__m_dict.items():
-            if isinstance(dictionary, list):  # Indicates that dictionary is a list of lang dict file path.
+            if isinstance(dictionary, list):  # Indicates that var<dictionary> is a list of lang dict file path.
                 new_dict[dictionary_associated_lang] = {}
                 for dictionary_file_path in dictionary:
-                    dict_file = File(dictionary_file_path)
-                    if dict_file.info["ext"] == "lang":  # Parse the lang dict of type .lang
+                    dict_file = File(dictionary_file_path, False, False)
+                    if dict_file.info["ext"] == "lang":  # Parse the lang dict of lang type data.
                         new_dict[dictionary_associated_lang].update(LangTypeLangDict.loads(dict_file.content))
         self.__m_dict = new_dict
 
-    def default_lang(self, source_lang=None, target_lang=None):
-        if source_lang is not None:
+    def default_lang(self, source_lang="", target_lang=""):
+        if source_lang != "":
             self.__m_default_source_lang = source_lang
-        if target_lang is not None:
+        if target_lang != "":
             self.__m_default_target_lang = target_lang
 
-    def str(self, word, source_lang=None, target_lang=None):
+    def str(self, word, source_lang="", target_lang=""):
         # Whether are default langs setting.
-        if source_lang is None:
+        if source_lang == "":
             source_lang = self.__m_default_source_lang
-        if target_lang is None:
+        if target_lang == "":
             target_lang = self.__m_default_target_lang
 
         # Real-time loading mode.
-        if self._m_load_mode == load_mode.REALTIME:
+        if self._m_load_mode == LoadMode.REALTIME:
             self.__load_lang_dict()
 
-        # Initialize lang dict search transition value.
+        # Initialize lang dict search transition values.
         source_word = word
         universal_word = None
         target_word = None

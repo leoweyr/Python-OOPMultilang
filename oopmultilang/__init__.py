@@ -1,7 +1,8 @@
 from .lang import (
+    LoadMode,
     Lang,
-    load_mode,
     LangDictSearchError
 )
 
-__all__ = ["Lang", "load_mode", "LangDictSearchError"]
+
+__all__ = ["LoadMode", "Lang", "LangDictSearchError"]

@@ -1,7 +1,6 @@
 import inspect
 import os
 import sys
-from enum import Enum
 
 
 class ExpressionError(Exception):
@@ -27,7 +26,7 @@ class ExpressionError(Exception):
         return error_message
 
 
-class LangDictSearchError(Exception, Enum):
+class LangDictSearchError(Exception):
     # Error type.
     UNIVERSAL_WORD_EXIST_ERROR = 1
     SOURCE_LANG_DICT_MATCH_ERROR = 2
@@ -39,12 +38,12 @@ class LangDictSearchError(Exception, Enum):
         self.__m_error_position = None
         self.__m_message = ""
 
-        # Different error conditions.
+        # Different error situations.
         if self.__m_error_type == LangDictSearchError.UNIVERSAL_WORD_EXIST_ERROR:
-            self.__m_message = f"'{self.__m_error_word}' is not the universal word in language dictionaries"
+            self.__m_message = f"'{self.__m_error_word}' is not a universal word in language dictionaries"
         elif self.__m_error_type == LangDictSearchError.SOURCE_LANG_DICT_MATCH_ERROR:
             self.__m_error_position = source_lang
-            self.__m_message = f"'{self.__m_error_word}' is not the native word in '{self.__m_error_position}' dictionary"
+            self.__m_message = f"'{self.__m_error_word}' is not a native word in '{self.__m_error_position}' dictionary"
         elif self.__m_error_type == LangDictSearchError.TARGET_LANG_DICT_MATCH_ERROR:
             self.__m_error_position = target_lang
             self.__m_message = f"'{self.__m_error_word}' can not be converted to the native word in '{self.__m_error_position}' dictionary"
@@ -58,7 +57,7 @@ class LangDictSearchError(Exception, Enum):
 
     @property
     def word(self):
-        return self.word
+        return self.__m_error_word
 
     @property
     def position(self):
