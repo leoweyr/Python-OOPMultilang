@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oopmultilang"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Python package that supports multi-language conversion of the object-oriented paradigm."
 license = "MIT"
 authors = ["leoweyr <leoweyr@foxmail.com>"]

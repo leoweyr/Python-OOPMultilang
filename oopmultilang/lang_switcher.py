@@ -56,49 +56,55 @@ class LangSwitcher:
         self.__m_default_source_lang = None
         self.__m_default_target_lang = None
 
-        if len(include) != 0:
+        # Avoid parsing a tuple with only one element as a single string.
+        if isinstance(include, tuple):
             for expression in include:
-                """
-                Parses expressions imported into language dictionaries via param<include>.
-
-                There are two forms of this expression, one is full and the other is short.
-
-                For example:
-
-                1. ``full``: './en_us.lang as en_us'
-                2. ``short``: './en_us.lang'
-
-                Note that when using the short form, the name of the associated language will be the name of the file.
-                """
-                if expression.find("as") != -1:
-                    if expression.count("as") == 1:
-                        """
-                        A list of strings representing the distinct terms of the expression after it is parsed.
-                        
-                        - ``expression_parsing[0]``: The file path of the language dictionary.
-                        - ``expression_parsing[1]``: The associated language of the language dictionary.
-                        """
-                        expression_parsing = [expression_unit.strip() for expression_unit in expression.split("as")]
-                        dictionary_file = File(expression_parsing[0], False, False)
-                        dictionary_associated_lang = expression_parsing[1]
-                    else:
-                        raise ExpressionError(expression)
-                else:
-                    dictionary_file = File(expression, False, False)
-                    dictionary_associated_lang = dictionary_file.info["name"]
-
-                # Store language dictionary file information for different languages into member:private<self.__m_dict>.
-                if not dictionary_file.state["exist"]:
-                    raise FileNotFoundError("Language dictionary not found: " + dictionary_file.info["path"])
-                else:
-                    if dictionary_associated_lang in self.__m_dict.keys():
-                        self.__m_dict[dictionary_associated_lang].append(dictionary_file.info["path"])
-                    else:
-                        self.__m_dict[dictionary_associated_lang] = [dictionary_file.info["path"]]
+                self.__parse_expression(expression)
+        else:
+            self.__parse_expression(include)
 
         # One-time loading mode.
         if self._m_load_mode == LoadMode.ONETIME:
             self.__load_lang_dict()
+
+    def __parse_expression(self,expression):
+        """
+        Parses expressions imported into language dictionaries via param<include>.
+
+        There are two forms of this expression, one is full and the other is short.
+
+        For example:
+
+        1. ``full``: './en_us.lang as en_us'
+        2. ``short``: './en_us.lang'
+
+        Note that when using the short form, the name of the associated language will be the name of the file.
+        """
+        if expression.find("as") != -1:
+            if expression.count("as") == 1:
+                """
+                A list of strings representing the distinct terms of the expression after it is parsed.
+
+                - ``expression_parsing[0]``: The file path of the language dictionary.
+                - ``expression_parsing[1]``: The associated language of the language dictionary.
+                """
+                expression_parsing = [expression_unit.strip() for expression_unit in expression.split("as")]
+                dictionary_file = File(expression_parsing[0], False, False)
+                dictionary_associated_lang = expression_parsing[1]
+            else:
+                raise ExpressionError(expression)
+        else:
+            dictionary_file = File(expression, False, False)
+            dictionary_associated_lang = dictionary_file.info["name"]
+
+        # Store language dictionary file information for different languages into member:private<self.__m_dict>.
+        if not dictionary_file.state["exist"]:
+            raise FileNotFoundError("Language dictionary not found: " + dictionary_file.info["path"])
+        else:
+            if dictionary_associated_lang in self.__m_dict.keys():
+                self.__m_dict[dictionary_associated_lang].append(dictionary_file.info["path"])
+            else:
+                self.__m_dict[dictionary_associated_lang] = [dictionary_file.info["path"]]
 
     def __load_lang_dict(self):
         new_dict = self.__m_dict.copy()
